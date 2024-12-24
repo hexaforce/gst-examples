@@ -1,0 +1,4 @@
+[26/26] Linking target ext/libav/libgstlibav.so
+ninja: Entering directory `build'
+[0/1] /usr/local/bin/meson install --no-rebuild
+Installing ext/libav/libgstlibav.so to /usr/lib/x86_64-linux-gnu/gstreamer-1.0

@@ -1,0 +1,6 @@
+cert.pem
+key.pem
+.vscode/settings.json
+
+package-lock.json
+node_modules/

@@ -1,0 +1,29 @@
+[153/153] Generating nice/Nice-0.1.typelib with a custom command
+ninja: Entering directory `build'
+[0/1] /usr/local/bin/meson install --no-rebuild
+Installing stun/tools/stund to /usr/bin
+Installing stun/tools/stunbdc to /usr/bin
+Installing nice/libnice.so.10.14.0 to /usr/lib/x86_64-linux-gnu
+Installing nice/Nice-0.1.gir to /usr/share/gir-1.0
+Installing nice/Nice-0.1.typelib to /usr/lib/x86_64-linux-gnu/girepository-1.0
+Installing gst/libgstnice.so to /usr/lib/x86_64-linux-gnu/gstreamer-1.0
+Installing /libnice/agent/address.h to /usr/include/nice
+Installing /libnice/agent/agent.h to /usr/include/nice
+Installing /libnice/agent/candidate.h to /usr/include/nice
+Installing /libnice/agent/debug.h to /usr/include/nice
+Installing /libnice/agent/interfaces.h to /usr/include/nice
+Installing /libnice/agent/pseudotcp.h to /usr/include/nice
+Installing /libnice/stun/stunagent.h to /usr/include/stun
+Installing /libnice/stun/stunmessage.h to /usr/include/stun
+Installing /libnice/stun/win32_common.h to /usr/include/stun
+Installing /libnice/stun/debug.h to /usr/include/stun
+Installing /libnice/stun/constants.h to /usr/include/stun
+Installing /libnice/stun/usages/bind.h to /usr/include/stun/usages
+Installing /libnice/stun/usages/ice.h to /usr/include/stun/usages
+Installing /libnice/stun/usages/turn.h to /usr/include/stun/usages
+Installing /libnice/stun/usages/timer.h to /usr/include/stun/usages
+Installing /libnice/nice/nice.h to /usr/include/nice
+Installing /libnice/build/nice/nice-version.h to /usr/include/nice
+Installing /libnice/build/meson-private/nice.pc to /usr/lib/x86_64-linux-gnu/pkgconfig
+Installing symlink pointing to libnice.so.10.14.0 to /usr/lib/x86_64-linux-gnu/libnice.so.10
+Installing symlink pointing to libnice.so.10 to /usr/lib/x86_64-linux-gnu/libnice.so

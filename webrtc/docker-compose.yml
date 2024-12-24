@@ -1,0 +1,54 @@
+services:
+  # uncomment the sendrecv you would like to use
+
+######### Gstreamer
+  sendrecv-gst:
+    build: ./sendrecv/gst
+    restart: no
+    command: tail -f /dev/null
+  # sendrecv-gst-java:
+  #   build: ./sendrecv/gst-java
+  #   restart: no
+  # sendrecv-gst-python:
+  #   build: ./sendrecv/gst-python
+  #   restart: no
+  # sendrecv-gst-rust:
+  #   build: ./sendrecv/gst-rust
+  #   restart: no
+
+######### WebRTC
+  # webrtc:
+  #   build: ./webrtc
+  #   ports:
+  #     - 3000:3000
+  #   depends_on:
+  #     - signalling
+  #   restart: no
+  # sendrecv-js:
+  #   build: ./sendrecv/js
+  #   ports:
+  #     - 8080:80
+  #   depends_on:
+  #     - signalling
+  #   restart: no
+  # sendrecv-react:
+  #   build: ./sendrecv/react
+  #   ports:
+  #     - 8080:80
+  #   depends_on:
+  #     - signalling
+  #   restart: no
+
+  sendonly:
+    build: ./sendonly
+    restart: no
+    command: tail -f /dev/null
+    ports:
+      - 57778:57778
+
+######### Signalling
+  signalling:
+    build: ./signalling
+    ports:
+      - 8443:8443
+    restart: no

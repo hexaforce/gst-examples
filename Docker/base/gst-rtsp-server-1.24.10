@@ -1,0 +1,35 @@
+[109/109] Generating gst/rtsp-server/GstRtspServer-1.0.typelib with a custom command
+ninja: Entering directory `build'
+[0/1] /usr/local/bin/meson install --no-rebuild
+Installing gst/rtsp-server/libgstrtspserver-1.0.so.0.2410.0 to /usr/lib/x86_64-linux-gnu
+Installing gst/rtsp-server/GstRtspServer-1.0.gir to /usr/share/gir-1.0
+Installing gst/rtsp-server/GstRtspServer-1.0.typelib to /usr/lib/x86_64-linux-gnu/girepository-1.0
+Installing gst/rtsp-sink/libgstrtspclientsink.so to /usr/lib/x86_64-linux-gnu/gstreamer-1.0
+Installing /gst-rtsp-server-1.24.10/gst/rtsp-server/rtsp-auth.h to /usr/include/gstreamer-1.0/gst/rtsp-server
+Installing /gst-rtsp-server-1.24.10/gst/rtsp-server/rtsp-address-pool.h to /usr/include/gstreamer-1.0/gst/rtsp-server
+Installing /gst-rtsp-server-1.24.10/gst/rtsp-server/rtsp-context.h to /usr/include/gstreamer-1.0/gst/rtsp-server
+Installing /gst-rtsp-server-1.24.10/gst/rtsp-server/rtsp-params.h to /usr/include/gstreamer-1.0/gst/rtsp-server
+Installing /gst-rtsp-server-1.24.10/gst/rtsp-server/rtsp-sdp.h to /usr/include/gstreamer-1.0/gst/rtsp-server
+Installing /gst-rtsp-server-1.24.10/gst/rtsp-server/rtsp-thread-pool.h to /usr/include/gstreamer-1.0/gst/rtsp-server
+Installing /gst-rtsp-server-1.24.10/gst/rtsp-server/rtsp-media.h to /usr/include/gstreamer-1.0/gst/rtsp-server
+Installing /gst-rtsp-server-1.24.10/gst/rtsp-server/rtsp-media-factory.h to /usr/include/gstreamer-1.0/gst/rtsp-server
+Installing /gst-rtsp-server-1.24.10/gst/rtsp-server/rtsp-media-factory-uri.h to /usr/include/gstreamer-1.0/gst/rtsp-server
+Installing /gst-rtsp-server-1.24.10/gst/rtsp-server/rtsp-mount-points.h to /usr/include/gstreamer-1.0/gst/rtsp-server
+Installing /gst-rtsp-server-1.24.10/gst/rtsp-server/rtsp-permissions.h to /usr/include/gstreamer-1.0/gst/rtsp-server
+Installing /gst-rtsp-server-1.24.10/gst/rtsp-server/rtsp-stream.h to /usr/include/gstreamer-1.0/gst/rtsp-server
+Installing /gst-rtsp-server-1.24.10/gst/rtsp-server/rtsp-stream-transport.h to /usr/include/gstreamer-1.0/gst/rtsp-server
+Installing /gst-rtsp-server-1.24.10/gst/rtsp-server/rtsp-session.h to /usr/include/gstreamer-1.0/gst/rtsp-server
+Installing /gst-rtsp-server-1.24.10/gst/rtsp-server/rtsp-session-media.h to /usr/include/gstreamer-1.0/gst/rtsp-server
+Installing /gst-rtsp-server-1.24.10/gst/rtsp-server/rtsp-session-pool.h to /usr/include/gstreamer-1.0/gst/rtsp-server
+Installing /gst-rtsp-server-1.24.10/gst/rtsp-server/rtsp-token.h to /usr/include/gstreamer-1.0/gst/rtsp-server
+Installing /gst-rtsp-server-1.24.10/gst/rtsp-server/rtsp-client.h to /usr/include/gstreamer-1.0/gst/rtsp-server
+Installing /gst-rtsp-server-1.24.10/gst/rtsp-server/rtsp-server.h to /usr/include/gstreamer-1.0/gst/rtsp-server
+Installing /gst-rtsp-server-1.24.10/gst/rtsp-server/rtsp-server-object.h to /usr/include/gstreamer-1.0/gst/rtsp-server
+Installing /gst-rtsp-server-1.24.10/gst/rtsp-server/rtsp-server-prelude.h to /usr/include/gstreamer-1.0/gst/rtsp-server
+Installing /gst-rtsp-server-1.24.10/gst/rtsp-server/rtsp-onvif-server.h to /usr/include/gstreamer-1.0/gst/rtsp-server
+Installing /gst-rtsp-server-1.24.10/gst/rtsp-server/rtsp-onvif-client.h to /usr/include/gstreamer-1.0/gst/rtsp-server
+Installing /gst-rtsp-server-1.24.10/gst/rtsp-server/rtsp-onvif-media-factory.h to /usr/include/gstreamer-1.0/gst/rtsp-server
+Installing /gst-rtsp-server-1.24.10/gst/rtsp-server/rtsp-onvif-media.h to /usr/include/gstreamer-1.0/gst/rtsp-server
+Installing /gst-rtsp-server-1.24.10/build/meson-private/gstreamer-rtsp-server-1.0.pc to /usr/lib/x86_64-linux-gnu/pkgconfig
+Installing symlink pointing to libgstrtspserver-1.0.so.0.2410.0 to /usr/lib/x86_64-linux-gnu/libgstrtspserver-1.0.so.0
+Installing symlink pointing to libgstrtspserver-1.0.so.0 to /usr/lib/x86_64-linux-gnu/libgstrtspserver-1.0.so

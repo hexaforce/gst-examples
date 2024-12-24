@@ -1,0 +1,14 @@
+services:
+  webrtc:
+    image: hexaforce/webrtc
+    ports:
+      - 3000:3000
+    depends_on:
+      - signalling
+    restart: no
+
+  signalling:
+    image: hexaforce/signalling
+    ports:
+      - 8443:8443
+    restart: no
