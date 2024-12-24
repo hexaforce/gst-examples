@@ -1,0 +1,33 @@
+services:
+  # uncomment the sendrecv you would like to use
+
+  sendrecv-gst:
+    build: ./sendrecv/gst
+    restart: no
+  # sendrecv-gst-java:
+  #   build: ./sendrecv/gst-java
+  #   restart: no
+  # sendrecv-gst-python:
+  #   build: ./sendrecv/gst-python
+  #   restart: no
+  # sendrecv-gst-rust:
+  #   build: ./sendrecv/gst-rust
+  #   restart: no
+  # sendrecv-js:
+  #   build: ./sendrecv/js
+  #   ports:
+  #     - 8080:80
+  #   depends_on:
+  #     - signalling
+  #   restart: no
+  sendrecv-react:
+    build: ./sendrecv/react
+    ports:
+      - 8080:80
+    depends_on:
+      - signalling
+    restart: no
+  signalling:
+    build: ./signalling
+    ports:
+      - 8443:8443
