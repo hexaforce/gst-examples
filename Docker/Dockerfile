@@ -75,7 +75,7 @@ RUN cargo install cargo-c
 RUN wget https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-$GST_VERSION.tar.xz \
  && tar xvfJ gstreamer-$GST_VERSION.tar.xz > /dev/null \
  && cd gstreamer-$GST_VERSION \
- && meson --prefix=/usr build && ninja -C build && ninja -C build install \
+ && meson --prefix=/usr build && ninja -C build && ninja -C build -v install \
  && cd / 
 
 # gst-plugins-base
