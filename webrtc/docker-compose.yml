@@ -1,9 +1,10 @@
 services:
   # uncomment the sendrecv you would like to use
 
-  sendrecv-gst:
-    build: ./sendrecv/gst
-    restart: no
+######### Gstreamer
+  # sendrecv-gst:
+  #   build: ./sendrecv/gst
+  #   restart: no
   # sendrecv-gst-java:
   #   build: ./sendrecv/gst-java
   #   restart: no
@@ -13,6 +14,15 @@ services:
   # sendrecv-gst-rust:
   #   build: ./sendrecv/gst-rust
   #   restart: no
+
+######### WebRTC
+  # webrtc:
+  #   build: ./webrtc
+  #   ports:
+  #     - 3000:3000
+  #   depends_on:
+  #     - signalling
+  #   restart: no
   # sendrecv-js:
   #   build: ./sendrecv/js
   #   ports:
@@ -20,14 +30,17 @@ services:
   #   depends_on:
   #     - signalling
   #   restart: no
-  sendrecv-react:
-    build: ./sendrecv/react
-    ports:
-      - 8080:80
-    depends_on:
-      - signalling
-    restart: no
+  # sendrecv-react:
+  #   build: ./sendrecv/react
+  #   ports:
+  #     - 8080:80
+  #   depends_on:
+  #     - signalling
+  #   restart: no
+
+######### Signalling
   signalling:
     build: ./signalling
     ports:
       - 8443:8443
+    restart: no

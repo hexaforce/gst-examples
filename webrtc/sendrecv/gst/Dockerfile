@@ -18,5 +18,6 @@ CMD echo "Waiting a few seconds for you to open the browser at localhost:8080" \
     && sleep 10 \
     && ./webrtc-sendrecv \
     --peer-id=1 \
-    --server=ws://signalling:8443 \
+    --server=wss://signalling.hexaforce.io \
+    # --server=ws://signalling:8443 \
     --disable-ssl

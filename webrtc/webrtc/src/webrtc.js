@@ -1,5 +1,7 @@
 // Override with your own STUN servers if you want
-export const rtc_configuration = { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] }
+export const rtc_configuration = {
+  iceServers: [{ urls: 'stun:stun.l.google.com:19302' }],
+}
 
 // The default constraints that will be attempted. Can be overriden by the user.
 export const default_constraints = { video: true, audio: true }
@@ -21,22 +23,27 @@ export const initialValue = {
   isSettingRemoteAnswerPending: false,
 }
 
-const use_ws_protocol = null
-const use_ws_server = null
-const use_ws_port = null
+const ws_protocol = 'wss'
+const ws_server = 'signalling.hexaforce.io'
+const ws_port = null
+
+// const ws_protocol = 'ws'
+// const ws_server = window.location.hostname
+// const ws_port = '8443'
 
 export const websocketServerURL = () => {
-  let ws_protocol = use_ws_protocol || 'ws'
-  let ws_server
-  if (window.location.protocol.startsWith('file')) {
-    ws_server = use_ws_server || '127.0.0.1'
-  } else if (window.location.protocol.startsWith('http')) {
-    ws_server = use_ws_server || window.location.hostname
-  } else {
-    throw new Error("Don't know how to connect to the signalling server with uri" + window.location)
-  }
-  let ws_port = use_ws_port || '8443'
-  return `${ws_protocol}://${ws_server}:${ws_port}`
+  // let ws_protocol = use_ws_protocol || 'ws'
+  // let ws_server
+  // if (window.location.protocol.startsWith('file')) {
+  //   ws_server = use_ws_server || '127.0.0.1'
+  // } else if (window.location.protocol.startsWith('http')) {
+  //   ws_server = use_ws_server || window.location.hostname
+  // } else {
+  //   throw new Error("Don't know how to connect to the signalling server with uri" + window.location)
+  // }
+  // let ws_port = use_ws_port || '8443'
+  if (ws_port) return `${ws_protocol}://${ws_server}:${ws_port}`
+  return `${ws_protocol}://${ws_server}`
 }
 
 const send = WebSocket.prototype.send

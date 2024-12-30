@@ -1,5 +1,6 @@
 import ReactDOM from 'react-dom/client'
 import React, { useState, useRef, useEffect } from 'react'
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 import { initialValue, rtc_configuration, default_constraints, websocketServerURL, parseMessage } from './webrtc'
 
 const use_peer_id = 1
@@ -271,4 +272,11 @@ const App = () => {
   )
 }
 
-ReactDOM.createRoot($('root')).render(<App />)
+ReactDOM.createRoot($('root')).render(
+  <Router>
+    <Routes>
+      <Route path='/health-check' element={<>OK</>} />
+      <Route path='/' element={<App />} />
+    </Routes>
+  </Router>,
+)
