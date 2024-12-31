@@ -185,10 +185,18 @@ ReceiverEntry *create_receiver_entry(SoupWebsocketConnection *connection) {
   g_signal_connect(G_OBJECT(connection), "message", G_CALLBACK(soup_websocket_message_cb), (gpointer)receiver_entry);
 
   error = NULL;
-  receiver_entry->pipeline = gst_parse_launch("webrtcbin name=webrtcbin stun-server=stun://stun.l.google.com:19302 "
-                                              "audiotestsrc is-live=true wave=red-noise ! audioconvert ! audioresample ! queue ! opusenc perfect-timestamp=true ! rtpopuspay ! "
-                                              "queue ! application/x-rtp,media=audio,encoding-name=OPUS,payload=97 ! webrtcbin. ",
-                                              &error);
+  receiver_entry->pipeline = gst_parse_launch(
+    "webrtcbin name=webrtcbin stun-server=stun://stun.l.google.com:19302 "
+    "audiotestsrc is-live=true wave=red-noise ! "
+    "audioconvert ! "
+    "audioresample ! "
+    "queue ! "
+    "opusenc perfect-timestamp=true ! "
+    "rtpopuspay ! "
+    "queue ! "
+    "application/x-rtp,media=audio,encoding-name=OPUS,payload=97 ! "
+    "webrtcbin. ",
+    &error);
   if (error != NULL) {
     g_error("Could not create WebRTC pipeline: %s\n", error->message);
     g_error_free(error);
@@ -209,8 +217,7 @@ ReceiverEntry *create_receiver_entry(SoupWebsocketConnection *connection) {
 #endif
 
   // Create a 2nd transceiver for the receive only video stream
-  video_caps = gst_caps_from_string("application/x-rtp,media=video,encoding-name=H264,payload=96"
-                                    ",clock-rate=90000,packetization-mode=(string)1, profile-level-id=(string)42c016");
+  video_caps = gst_caps_from_string("application/x-rtp,media=video,encoding-name=H264,payload=96, clock-rate=90000,packetization-mode=(string)1, profile-level-id=(string)42c016");
   g_signal_emit_by_name(receiver_entry->webrtcbin, "add-transceiver", GST_WEBRTC_RTP_TRANSCEIVER_DIRECTION_RECVONLY, video_caps, &trans);
   gst_caps_unref(video_caps);
   gst_object_unref(trans);
