@@ -754,9 +754,10 @@ static void connect_to_websocket_server_async(void) {
   SoupMessage *message;
   SoupSession *session;
   const char *https_aliases[] = {"wss", NULL};
-  session = soup_session_new_with_options(SOUP_SESSION_SSL_STRICT, !disable_ssl, SOUP_SESSION_SSL_USE_SYSTEM_CA_FILE, TRUE,
-                                          // SOUP_SESSION_SSL_CA_FILE, "/etc/ssl/certs/ca-bundle.crt",
-                                          SOUP_SESSION_HTTPS_ALIASES, https_aliases, NULL);
+  session = soup_session_new_with_options(
+    SOUP_SESSION_SSL_STRICT, !disable_ssl, SOUP_SESSION_SSL_USE_SYSTEM_CA_FILE, TRUE,
+    // SOUP_SESSION_SSL_CA_FILE, "/etc/ssl/certs/ca-bundle.crt",
+    SOUP_SESSION_HTTPS_ALIASES, https_aliases, NULL);
   logger = soup_logger_new(SOUP_LOGGER_LOG_BODY, -1);
   soup_session_add_feature(session, SOUP_SESSION_FEATURE(logger));
   g_object_unref(logger);
