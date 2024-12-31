@@ -12,3 +12,6 @@ RUN wget https://gitlab.freedesktop.org/gstreamer/gst-plugins-rs/-/archive/gstre
  && cd gst-plugins-rs-gstreamer-$GST_VERSION \
  && meson --prefix=/usr build && ninja -C build -j$(nproc) && ninja -C build -v install \
  && cd / 
+#  $ cargo cbuild -p gst-plugin-cdg --prefix=/usr
+#  $ cargo cinstall -p gst-plugin-cdg --prefix=/usr
+ 
