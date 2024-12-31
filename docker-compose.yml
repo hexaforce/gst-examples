@@ -8,7 +8,7 @@ services:
     restart: no
 
   signalling:
-    image: hexaforce/signalling
+    image: hexaforce/gst-webrtc-signalling-server:1.24.10
     ports:
       - 8443:8443
     restart: no
