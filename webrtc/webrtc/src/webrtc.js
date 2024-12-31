@@ -27,23 +27,27 @@ const ws_protocol = 'wss'
 const ws_server = 'signalling.hexaforce.io'
 const ws_port = null
 
+const use_peer_id = null
+
 // const ws_protocol = 'ws'
 // const ws_server = window.location.hostname
 // const ws_port = '8443'
 
 export const websocketServerURL = () => {
-  // let ws_protocol = use_ws_protocol || 'ws'
-  // let ws_server
-  // if (window.location.protocol.startsWith('file')) {
-  //   ws_server = use_ws_server || '127.0.0.1'
-  // } else if (window.location.protocol.startsWith('http')) {
-  //   ws_server = use_ws_server || window.location.hostname
-  // } else {
-  //   throw new Error("Don't know how to connect to the signalling server with uri" + window.location)
-  // }
-  // let ws_port = use_ws_port || '8443'
   if (ws_port) return `${ws_protocol}://${ws_server}:${ws_port}`
   return `${ws_protocol}://${ws_server}`
+}
+
+export const generatePeerId = () => {
+  return use_peer_id || Math.floor(Math.random() * (9000 - 10) + 10).toString()
+}
+
+export const trackStop = (stream) => {
+  if (stream) {
+    for (const track of stream.getTracks()) {
+      track.stop()
+    }
+  }
 }
 
 const send = WebSocket.prototype.send

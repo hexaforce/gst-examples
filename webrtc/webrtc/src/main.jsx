@@ -1,11 +1,10 @@
 import ReactDOM from 'react-dom/client'
 import React, { useState, useRef, useEffect } from 'react'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
-import { initialValue, rtc_configuration, default_constraints, websocketServerURL, parseMessage } from './webrtc'
-
-const use_peer_id = 1
+import { initialValue, rtc_configuration, default_constraints, websocketServerURL,generatePeerId, parseMessage,trackStop } from './webrtc'
 
 const App = () => {
+
   const [state, setState] = useState({ ...initialValue })
   function inputChange(event) {
     const { id, type, value, checked } = event.target
@@ -13,16 +12,16 @@ const App = () => {
   }
 
   const ws_conn = useRef(null)
-  const peer_connection = useRef(null)
-  const receive_video = useRef(null)
-  const send_video = useRef(null)
+  const peer_conn = useRef(null)
+  const receive_video_tag = useRef(null)
+  const send_video_stream = useRef(null)
 
   useEffect(() => {
-    peer_connection.current = new RTCPeerConnection(rtc_configuration)
+    peer_conn.current = new RTCPeerConnection(rtc_configuration)
     websocketServerConnect()
     return () => {
       if (ws_conn.current) ws_conn.current.close()
-      if (peer_connection.current) peer_connection.current.close()
+      if (peer_conn.current) peer_conn.current.close()
     }
   }, [])
 
@@ -34,7 +33,7 @@ const App = () => {
     }
 
     // Fetch the peer id to use
-    let peer_id = use_peer_id || Math.floor(Math.random() * (9000 - 10) + 10).toString()
+    let peer_id = generatePeerId()
 
     ws_conn.current = new WebSocket(websocketServerURL())
     ws_conn.current.onopen = () => {
@@ -77,25 +76,25 @@ const App = () => {
             try {
               // An offer may come in while we are busy processing SRD(answer).
               // In this case, we will be in "stable" by the time the offer is processed so it is safe to chain it on our Operations Chain now.
-              const readyForOffer = !state.makingOffer && (peer_connection.current.signalingState == 'stable' || state.isSettingRemoteAnswerPending)
+              const readyForOffer = !state.makingOffer && (peer_conn.current.signalingState == 'stable' || state.isSettingRemoteAnswerPending)
               const offerCollision = sdp.type == 'offer' && !readyForOffer
               if (offerCollision) {
                 return
               }
 
               setState((prevState) => ({ ...prevState, isSettingRemoteAnswerPending: sdp.type == 'answer' }))
-              await peer_connection.current.setRemoteDescription(sdp)
+              await peer_conn.current.setRemoteDescription(sdp)
               setState((prevState) => ({ ...prevState, isSettingRemoteAnswerPending: false }))
 
               if (sdp.type == 'offer') {
-                send_video.current = await navigator.mediaDevices.getUserMedia(default_constraints)
-                for (const track of send_video.current.getTracks()) {
-                  peer_connection.current.addTrack(track, send_video.current)
+                send_video_stream.current = await navigator.mediaDevices.getUserMedia(default_constraints)
+                for (const track of send_video_stream.current.getTracks()) {
+                  peer_conn.current.addTrack(track, send_video_stream.current)
                 }
-                await peer_connection.current.setLocalDescription()
-                ws_conn.current.send({ sdp: peer_connection.current.localDescription })
-                if (peer_connection.current.iceConnectionState == 'connected') {
-                  console.log(`SDP ${peer_connection.current.localDescription.type} sent, ICE connected, all looks OK`)
+                await peer_conn.current.setLocalDescription()
+                ws_conn.current.send({ sdp: peer_conn.current.localDescription })
+                if (peer_conn.current.iceConnectionState == 'connected') {
+                  console.log(`SDP ${peer_conn.current.localDescription.type} sent, ICE connected, all looks OK`)
                 }
               }
             } catch (err) {
@@ -107,7 +106,7 @@ const App = () => {
             console.log('receive <<< : ', ice)
             try {
               // ICE candidate received from peer, add it to the peer connection
-              await peer_connection.current.addIceCandidate(new RTCIceCandidate(ice))
+              await peer_conn.current.addIceCandidate(new RTCIceCandidate(ice))
             } catch (err) {
               console.error(err)
             }
@@ -117,27 +116,15 @@ const App = () => {
     ws_conn.current.onclose = async () => {
       console.log('Disconnected from server')
       // Release the webcam and mic
-      if (receive_video.current && receive_video.current.srcObject) {
-        const tracks = receive_video.current.srcObject.getTracks()
-        tracks.forEach((track) => track.stop())
-      }
-      const video = receive_video.current
+      const video = receive_video_tag.current
       if (video != null) {
-        if (video.srcObject != null) {
-          for (const track of video.srcObject.getTracks()) {
-            track.stop()
-          }
-        }
+        trackStop(video.srcObject)
         video.style.display = 'none'
       }
-      if (send_video.current) {
-        for (const track of send_video.current.getTracks()) {
-          track.stop()
-        }
-      }
-      if (peer_connection.current) {
-        peer_connection.current.close()
-        peer_connection.current = new RTCPeerConnection(rtc_configuration)
+      trackStop(send_video_stream.current)
+      if (peer_conn.current) {
+        peer_conn.current.close()
+        peer_conn.current = new RTCPeerConnection(rtc_configuration)
       }
       setState((prevState) => ({ ...prevState, callCreateTriggered: false }))
       // Reset after a second
@@ -153,7 +140,7 @@ const App = () => {
   const createCall = (sdp, ice) => {
     setState((prevState) => ({ ...prevState, callCreateTriggered: true }))
 
-    const send_channel = peer_connection.current.createDataChannel('label', null)
+    const send_channel = peer_conn.current.createDataChannel('label', null)
     send_channel.onmessage = ({ type, data }) => {
       if (typeof data === 'string' || data instanceof String) {
         console.log(`type:${type} date:${data}`)
@@ -161,7 +148,7 @@ const App = () => {
       send_channel.send('Hi! (from browser send)')
     }
 
-    peer_connection.current.ondatachannel = ({ channel: receive_channel }) => {
+    peer_conn.current.ondatachannel = ({ channel: receive_channel }) => {
       receive_channel.onmessage = ({ type, data }) => {
         if (typeof data === 'string' || data instanceof String) {
           console.log(`type:${type} date:${data}`)
@@ -170,9 +157,9 @@ const App = () => {
       }
     }
 
-    peer_connection.current.ontrack = ({ receiver, streams, track, transceiver }) => {
+    peer_conn.current.ontrack = ({ receiver, streams, track, transceiver }) => {
       if (!streams || streams.length === 0) return
-      const video = receive_video.current
+      const video = receive_video_tag.current
       const { contentHint, enabled, id, kind, label, muted, readyState, stats } = track
       track.onmute = () => {
         video.style.display = 'none'
@@ -183,7 +170,7 @@ const App = () => {
       video.style.display = kind === 'audio' ? 'none' : 'block'
       video.srcObject = streams[0]
     }
-    peer_connection.current.onicecandidate = (event) => {
+    peer_conn.current.onicecandidate = (event) => {
       // We have a candidate, send it to the remote party with the same uuid
       if (event.candidate == null) {
         console.log('ICE Candidate was null, done')
@@ -191,18 +178,18 @@ const App = () => {
       }
       ws_conn.current.send({ ice: event.candidate })
     }
-    peer_connection.current.oniceconnectionstatechange = (event) => {
-      if (peer_connection.current.iceConnectionState == 'connected') {
+    peer_conn.current.oniceconnectionstatechange = (event) => {
+      if (peer_conn.current.iceConnectionState == 'connected') {
         console.log('ICE gathering complete')
       }
     }
     // let the "negotiationneeded" event trigger offer generation
-    peer_connection.current.onnegotiationneeded = async () => {
+    peer_conn.current.onnegotiationneeded = async () => {
       if (state['remote-offerer']) return
       try {
         setState((prevState) => ({ ...prevState, makingOffer: true }))
-        await peer_connection.current.setLocalDescription()
-        ws_conn.current.send({ sdp: peer_connection.current.localDescription })
+        await peer_conn.current.setLocalDescription()
+        ws_conn.current.send({ sdp: peer_conn.current.localDescription })
       } catch (err) {
         console.error(err)
         ws_conn.current.close()
@@ -240,7 +227,7 @@ const App = () => {
   return (
     <div>
       <div id='video'>
-        <video ref={receive_video} style={{ display: 'none' }} autoPlay playsInline>
+        <video ref={receive_video_tag} style={{ display: 'none' }} autoPlay playsInline>
           Your browser doesn't support video
         </video>
       </div>
