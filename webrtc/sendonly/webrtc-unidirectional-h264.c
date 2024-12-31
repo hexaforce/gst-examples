@@ -2,19 +2,15 @@
 #include <gst/gst.h>
 #include <gst/sdp/sdp.h>
 #include <locale.h>
-
 #ifdef G_OS_UNIX
 #include <glib-unix.h>
 #endif
 #define GST_USE_UNSTABLE_API
-
 #include <gst/webrtc/webrtc.h>
 #include <json-glib/json-glib.h>
 #include <libsoup/soup.h>
 #include <string.h>
-
 #define SOUP_HTTP_PORT 57778
-
 #ifdef G_OS_WIN32
 #define VIDEO_SRC "mfvideosrc"
 #elif defined(__APPLE__)
@@ -22,7 +18,6 @@
 #else
 #define VIDEO_SRC "v4l2src"
 #endif
-
 gchar *video_priority = NULL;
 gchar *audio_priority = NULL;
 typedef struct _ReceiverEntry ReceiverEntry;
@@ -36,13 +31,11 @@ void soup_websocket_closed_cb(SoupWebsocketConnection *connection, gpointer user
 void soup_http_handler(SoupServer *soup_server, SoupMessage *message, const char *path, GHashTable *query, SoupClientContext *client_context, gpointer user_data);
 void soup_websocket_handler(G_GNUC_UNUSED SoupServer *server, SoupWebsocketConnection *connection, const char *path, SoupClientContext *client_context, gpointer user_data);
 static gchar *get_string_from_json_object(JsonObject *object);
-
 struct _ReceiverEntry {
   SoupWebsocketConnection *connection;
   GstElement *pipeline;
   GstElement *webrtcbin;
 };
-
 gchar *read_file(const gchar *filename) {
   GError *error = NULL;
   gchar *content = NULL;
@@ -53,7 +46,6 @@ gchar *read_file(const gchar *filename) {
   }
   return content;
 }
-
 static gboolean bus_watch_cb(GstBus *bus, GstMessage *message, gpointer user_data) {
   GstPipeline *pipeline = user_data;
   switch (GST_MESSAGE_TYPE(message)) {
@@ -83,7 +75,6 @@ static gboolean bus_watch_cb(GstBus *bus, GstMessage *message, gpointer user_dat
   }
   return G_SOURCE_CONTINUE;
 }
-
 static GstWebRTCPriorityType _priority_from_string(const gchar *s) {
   GEnumClass *klass = (GEnumClass *)g_type_class_ref(GST_TYPE_WEBRTC_PRIORITY_TYPE);
   GEnumValue *en;
@@ -95,7 +86,6 @@ static GstWebRTCPriorityType _priority_from_string(const gchar *s) {
     return en->value;
   return 0;
 }
-
 ReceiverEntry *create_receiver_entry(SoupWebsocketConnection *connection) {
   GError *error;
   ReceiverEntry *receiver_entry;
@@ -107,29 +97,28 @@ ReceiverEntry *create_receiver_entry(SoupWebsocketConnection *connection) {
   g_object_ref(G_OBJECT(connection));
   g_signal_connect(G_OBJECT(connection), "message", G_CALLBACK(soup_websocket_message_cb), (gpointer)receiver_entry);
   error = NULL;
-  receiver_entry->pipeline = gst_parse_launch(
-    "webrtcbin name=webrtcbin stun-server=stun://stun.l.google.com:19302 " VIDEO_SRC " ! "
-    "videorate ! "
-    "videoscale ! "
-    "video/x-raw,width=640,height=360,framerate=15/1 ! "
-    "videoconvert ! "
-    "queue max-size-buffers=1 ! "
-    "x264enc bitrate=600 speed-preset=ultrafast tune=zerolatency key-int-max=15 ! "
-    "video/x-h264,profile=constrained-baseline ! "
-    "queue max-size-time=100000000 ! "
-    "h264parse ! "
-    "rtph264pay config-interval=-1 name=payloader aggregate-mode=zero-latency ! "
-    "application/x-rtp,media=video,encoding-name=H264,payload=96 ! "
-    "webrtcbin. "
-    "autoaudiosrc ! "
-    "queue max-size-buffers=1 leaky=downstream ! "
-    "audioconvert ! "
-    "audioresample ! "
-    "opusenc perfect-timestamp=true ! "
-    "rtpopuspay pt=97 ! "
-    "application/x-rtp,encoding-name=OPUS ! "
-    "webrtcbin. ",
-    &error);
+  receiver_entry->pipeline = gst_parse_launch("webrtcbin name=webrtcbin stun-server=stun://stun.l.google.com:19302 " VIDEO_SRC " ! "
+                                              "videorate ! "
+                                              "videoscale ! "
+                                              "video/x-raw,width=640,height=360,framerate=15/1 ! "
+                                              "videoconvert ! "
+                                              "queue max-size-buffers=1 ! "
+                                              "x264enc bitrate=600 speed-preset=ultrafast tune=zerolatency key-int-max=15 ! "
+                                              "video/x-h264,profile=constrained-baseline ! "
+                                              "queue max-size-time=100000000 ! "
+                                              "h264parse ! "
+                                              "rtph264pay config-interval=-1 name=payloader aggregate-mode=zero-latency ! "
+                                              "application/x-rtp,media=video,encoding-name=H264,payload=96 ! "
+                                              "webrtcbin. "
+                                              "autoaudiosrc ! "
+                                              "queue max-size-buffers=1 leaky=downstream ! "
+                                              "audioconvert ! "
+                                              "audioresample ! "
+                                              "opusenc perfect-timestamp=true ! "
+                                              "rtpopuspay pt=97 ! "
+                                              "application/x-rtp,encoding-name=OPUS ! "
+                                              "webrtcbin. ",
+                                              &error);
   if (error != NULL) {
     g_error("Could not create WebRTC pipeline: %s\n", error->message);
     g_error_free(error);
@@ -176,7 +165,6 @@ cleanup:
   destroy_receiver_entry((gpointer)receiver_entry);
   return NULL;
 }
-
 void destroy_receiver_entry(gpointer receiver_entry_ptr) {
   ReceiverEntry *receiver_entry = (ReceiverEntry *)receiver_entry_ptr;
   g_assert(receiver_entry != NULL);
@@ -193,7 +181,6 @@ void destroy_receiver_entry(gpointer receiver_entry_ptr) {
     g_object_unref(G_OBJECT(receiver_entry->connection));
   g_free(receiver_entry);
 }
-
 void on_offer_created_cb(GstPromise *promise, gpointer user_data) {
   gchar *sdp_string;
   gchar *json_string;
@@ -225,7 +212,6 @@ void on_offer_created_cb(GstPromise *promise, gpointer user_data) {
   g_free(sdp_string);
   gst_webrtc_session_description_free(offer);
 }
-
 void on_negotiation_needed_cb(GstElement *webrtcbin, gpointer user_data) {
   GstPromise *promise;
   ReceiverEntry *receiver_entry = (ReceiverEntry *)user_data;
@@ -233,7 +219,6 @@ void on_negotiation_needed_cb(GstElement *webrtcbin, gpointer user_data) {
   promise = gst_promise_new_with_change_func(on_offer_created_cb, (gpointer)receiver_entry, NULL);
   g_signal_emit_by_name(G_OBJECT(webrtcbin), "create-offer", NULL, promise);
 }
-
 void on_ice_candidate_cb(G_GNUC_UNUSED GstElement *webrtcbin, guint mline_index, gchar *candidate, gpointer user_data) {
   JsonObject *ice_json;
   JsonObject *ice_data_json;
@@ -250,7 +235,6 @@ void on_ice_candidate_cb(G_GNUC_UNUSED GstElement *webrtcbin, guint mline_index,
   soup_websocket_connection_send_text(receiver_entry->connection, json_string);
   g_free(json_string);
 }
-
 void soup_websocket_message_cb(G_GNUC_UNUSED SoupWebsocketConnection *connection, SoupWebsocketDataType data_type, GBytes *message, gpointer user_data) {
   gsize size;
   const gchar *data;
@@ -352,13 +336,11 @@ unknown_message:
   g_error("Unknown message \"%s\", ignoring", data_string);
   goto cleanup;
 }
-
 void soup_websocket_closed_cb(SoupWebsocketConnection *connection, gpointer user_data) {
   GHashTable *receiver_entry_table = (GHashTable *)user_data;
   g_hash_table_remove(receiver_entry_table, connection);
   gst_print("Closed websocket connection %p\n", (gpointer)connection);
 }
-
 void soup_http_handler(G_GNUC_UNUSED SoupServer *soup_server, SoupMessage *message, const char *path, G_GNUC_UNUSED GHashTable *query, G_GNUC_UNUSED SoupClientContext *client_context, G_GNUC_UNUSED gpointer user_data) {
   SoupBuffer *soup_buffer;
   if ((g_strcmp0(path, "/") != 0) && (g_strcmp0(path, "/index.html") != 0)) {
@@ -373,7 +355,6 @@ void soup_http_handler(G_GNUC_UNUSED SoupServer *soup_server, SoupMessage *messa
   soup_buffer_free(soup_buffer);
   soup_message_set_status(message, SOUP_STATUS_OK);
 }
-
 void soup_websocket_handler(G_GNUC_UNUSED SoupServer *server, SoupWebsocketConnection *connection, G_GNUC_UNUSED const char *path, G_GNUC_UNUSED SoupClientContext *client_context, gpointer user_data) {
   ReceiverEntry *receiver_entry;
   GHashTable *receiver_entry_table = (GHashTable *)user_data;
@@ -382,7 +363,6 @@ void soup_websocket_handler(G_GNUC_UNUSED SoupServer *server, SoupWebsocketConne
   receiver_entry = create_receiver_entry(connection);
   g_hash_table_replace(receiver_entry_table, connection, receiver_entry);
 }
-
 static gchar *get_string_from_json_object(JsonObject *object) {
   JsonNode *root;
   JsonGenerator *generator;
@@ -397,7 +377,6 @@ static gchar *get_string_from_json_object(JsonObject *object) {
   json_node_free(root);
   return text;
 }
-
 #ifdef G_OS_UNIX
 gboolean exit_sighandler(gpointer user_data) {
   gst_print("Caught signal, stopping mainloop\n");
@@ -406,13 +385,11 @@ gboolean exit_sighandler(gpointer user_data) {
   return TRUE;
 }
 #endif
-
 static GOptionEntry entries[] = {
     {"video-priority", 0, 0, G_OPTION_ARG_STRING, &video_priority, "Priority of the video stream (very-low, low, medium or high)", "PRIORITY"},
     {"audio-priority", 0, 0, G_OPTION_ARG_STRING, &audio_priority, "Priority of the audio stream (very-low, low, medium or high)", "PRIORITY"},
     {NULL},
-}
-
+};
 int main(int argc, char *argv[]) {
   GMainLoop *mainloop;
   SoupServer *soup_server;

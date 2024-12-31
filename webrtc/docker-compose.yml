@@ -2,10 +2,10 @@ services:
   # uncomment the sendrecv you would like to use
 
 ######### Gstreamer
-  # sendrecv-gst:
-  #   build: ./sendrecv/gst
-  #   restart: no
-  #   command: tail -f /dev/null
+  sendrecv-gst:
+    build: ./sendrecv/gst
+    restart: no
+    command: tail -f /dev/null
   # sendrecv-gst-java:
   #   build: ./sendrecv/gst-java
   #   restart: no
