@@ -2,8 +2,6 @@
 
 FROM rust:bookworm
 
-ENV GST_VERSION=1.24.10
-
 RUN apt-get update && apt-get install -y --no-install-recommends \
   autoconf `# build tools` \
   automake `# build tools` \
@@ -177,4 +175,3 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 RUN apt-get remove --purge libsoup-3.0-dev -y
 RUN pip3 install --break-system-packages meson
-# RUN cargo install cargo-c 
