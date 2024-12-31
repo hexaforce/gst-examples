@@ -2,7 +2,7 @@
 
 FROM rust:bookworm
 
-ARG GST_VERSION=1.24.10
+ENV GST_VERSION=1.24.10
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
   autoconf `# build tools` \
@@ -34,10 +34,93 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   libsdl2-dev \
   qtbase5-dev \
   qtdeclarative5-dev \
-  libcdparanoia-dev \
+  cdparanoia \
+  libgupnp-igd-1.0-dev \
   libvorbis-dev \
   qttools5-dev-tools \
   libqt5opengl5-dev \
+  libc6-dev \
+  libgupnp-igd-1.0-dev \
+  libc6-dev \
+  nasm \
+  libv4l-dev \
+  libaa1-dev \
+  libopencore-amrnb-dev \
+  libopencore-amrwb-dev \
+  libflac-dev \
+  libdv4-dev \
+  libmpg123-dev \
+  libraw1394-dev \
+  libavc1394-dev \
+  libiec61883-dev \
+  libshout3-dev \
+  libspeex-dev \
+  libtag1-dev \
+  libtwolame-dev \
+  libwavpack-dev \
+  libjack-jackd2-dev \
+  libgudev-1.0-dev \
+  libx11-xcb-dev \
+  libvorbisidec-dev \
+  libgupnp-igd-1.0-dev \
+  libcaca-dev \
+  qmake6 \
+  qt6-base-dev \
+  libcgroup-dev \
+  libopencv-dev \
+  libva-dev \
+  libusb-1.0-0-dev \
+  libssh2-1-dev \
+  libdirectfb-dev \
+  libflac-dev \
+  libmodplug-dev \
+  libjpeg-dev \
+  qt6-base-dev \
+  libcdio-dev \
+  libmpeg2-4-dev \
+  libopencv-dev \
+  libva-dev \
+  libusb-1.0-0-dev \
+  libssh2-1-dev \
+  libdirectfb-dev \
+  libflac-dev \
+  libmodplug-dev \
+  libjpeg-dev \
+  libdca-dev \
+  libfaad-dev \
+  libfluidsynth-dev \
+  libgme-dev \
+  libgsm1-dev \
+  libmodplug-dev \
+  mjpegtools \
+  libneon27-gnutls-dev \
+  libopenal-dev \
+  libfreeaptx-dev \
+  libopenaptx-dev \
+  libxkbcommon-x11-dev \
+  libltc-dev \
+  bluez \
+  libsrt-openssl-dev \
+  libass-dev \
+  libbs2b-dev \
+  libchromaprint-dev \
+  liblilv-dev \
+  libmjpegtools-dev \
+  libopenmpt-dev \
+  libopenni2-dev \
+  libqrencode-dev \
+  libdvdnav-dev \
+  libdvdread-dev \
+  librtmp-dev \
+  libsbc-dev \
+  libsoundtouch-dev \
+  libspandsp-dev \
+  libzvbi-dev \
+  libvo-aacenc-dev \
+  libvo-amrwbenc-dev \
+  libwebrtc-audio-processing-dev \
+  libwildmidi-dev \
+  libzbar-dev \
   gnutls-dev `# libnice` \
   gtk-doc-tools `# documentation tools` \
   libffi-dev \
@@ -94,4 +177,4 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 RUN apt-get remove --purge libsoup-3.0-dev -y
 RUN pip3 install --break-system-packages meson
-RUN cargo install cargo-c 
+# RUN cargo install cargo-c 

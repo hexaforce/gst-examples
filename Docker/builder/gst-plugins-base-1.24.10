@@ -1,4 +1,4 @@
-[965/965] Linking target tests/examples/gl/qt/qglwidgetvideooverlay/qglwidgetvideoverlay
+[971/971] Linking target tests/examples/gl/qt/qglwidgetvideooverlay/qglwidgetvideoverlay
 ninja: Entering directory `build'
 [0/1] /usr/local/bin/meson install --no-rebuild
 Installing gst-libs/gst/tag/tag-enumtypes.h to /usr/include/gstreamer-1.0/gst/tag
@@ -79,6 +79,7 @@ Installing ext/opus/libgstopus.so to /usr/lib/x86_64-linux-gnu/gstreamer-1.0
 Installing ext/pango/libgstpango.so to /usr/lib/x86_64-linux-gnu/gstreamer-1.0
 Installing ext/theora/libgsttheora.so to /usr/lib/x86_64-linux-gnu/gstreamer-1.0
 Installing ext/vorbis/libgstvorbis.so to /usr/lib/x86_64-linux-gnu/gstreamer-1.0
+Installing ext/vorbis/libgstivorbisdec.so to /usr/lib/x86_64-linux-gnu/gstreamer-1.0
 Installing sys/ximage/libgstximagesink.so to /usr/lib/x86_64-linux-gnu/gstreamer-1.0
 Installing sys/xvimage/libgstxvimagesink.so to /usr/lib/x86_64-linux-gnu/gstreamer-1.0
 Installing tools/gst-device-monitor-1.0 to /usr/bin
@@ -256,6 +257,7 @@ Installing /gst-plugins-base-1.24.10/gst-libs/gst/allocators/gstphysmemory.h to 
 Installing /gst-plugins-base-1.24.10/gst-libs/gst/allocators/gstdmabuf.h to /usr/include/gstreamer-1.0/gst/allocators
 Installing /gst-plugins-base-1.24.10/gst-libs/gst/allocators/gstdrmdumb.h to /usr/include/gstreamer-1.0/gst/allocators
 Installing /gst-plugins-base-1.24.10/gst-libs/gst/allocators/gstshmallocator.h to /usr/include/gstreamer-1.0/gst/allocators
+Installing /gst-plugins-base-1.24.10/subprojects/gl-headers/wglext/GL/wglext.h to /usr/include/GL
 Installing /gst-plugins-base-1.24.10/gst-libs/gst/gl/gl.h to /usr/include/gstreamer-1.0/gst/gl
 Installing /gst-plugins-base-1.24.10/gst-libs/gst/gl/gl-prelude.h to /usr/include/gstreamer-1.0/gst/gl
 Installing /gst-plugins-base-1.24.10/gst-libs/gst/gl/gstgl_enums.h to /usr/include/gstreamer-1.0/gst/gl

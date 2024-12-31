@@ -1,0 +1,14 @@
+[4/4] Linking target gi/overrides/_gi_gst.cpython-311-x86_64-linux-gnu.so
+ninja: Entering directory `build'
+[0/1] /usr/local/bin/meson install --no-rebuild
+Installing gi/overrides/_gi_gst.cpython-311-x86_64-linux-gnu.so to /usr/lib/python3/dist-packages/gi/overrides
+Installing plugin/libgstpython.so to /usr/lib/x86_64-linux-gnu/gstreamer-1.0
+Installing /gst-python-1.24.10/gi/overrides/Gst.py to /usr/lib/python3/dist-packages/gi/overrides
+Installing /gst-python-1.24.10/gi/overrides/GstPbutils.py to /usr/lib/python3/dist-packages/gi/overrides
+Installing /gst-python-1.24.10/gi/overrides/GstVideo.py to /usr/lib/python3/dist-packages/gi/overrides
+Installing /gst-python-1.24.10/gi/overrides/GstAudio.py to /usr/lib/python3/dist-packages/gi/overrides
+Running custom install script '/usr/bin/python3 /gst-python-1.24.10/build/meson-private/pycompile.py python-3.11-installed.json 0'
+Compiling '/usr/lib/python3/dist-packages/gi/overrides/Gst.py'...
+Compiling '/usr/lib/python3/dist-packages/gi/overrides/GstPbutils.py'...
+Compiling '/usr/lib/python3/dist-packages/gi/overrides/GstVideo.py'...
+Compiling '/usr/lib/python3/dist-packages/gi/overrides/GstAudio.py'...
