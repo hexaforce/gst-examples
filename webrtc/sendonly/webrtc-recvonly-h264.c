@@ -144,17 +144,18 @@ ReceiverEntry *create_receiver_entry(SoupWebsocketConnection *connection) {
   g_object_ref(G_OBJECT(connection));
   g_signal_connect(G_OBJECT(connection), "message", G_CALLBACK(soup_websocket_message_cb), (gpointer)receiver_entry);
   error = NULL;
-  receiver_entry->pipeline = gst_parse_launch("webrtcbin name=webrtcbin stun-server=stun://stun.l.google.com:19302 "
-                                              "audiotestsrc is-live=true wave=red-noise ! "
-                                              "audioconvert ! "
-                                              "audioresample ! "
-                                              "queue ! "
-                                              "opusenc perfect-timestamp=true ! "
-                                              "rtpopuspay ! "
-                                              "queue ! "
-                                              "application/x-rtp,media=audio,encoding-name=OPUS,payload=97 ! "
-                                              "webrtcbin. ",
-                                              &error);
+  receiver_entry->pipeline = gst_parse_launch(
+    "webrtcbin name=webrtcbin stun-server=stun://stun.l.google.com:19302 "
+    "audiotestsrc is-live=true wave=red-noise ! "
+    "audioconvert ! "
+    "audioresample ! "
+    "queue ! "
+    "opusenc perfect-timestamp=true ! "
+    "rtpopuspay ! "
+    "queue ! "
+    "application/x-rtp,media=audio,encoding-name=OPUS,payload=97 ! "
+    "webrtcbin. ",
+    &error);
   if (error != NULL) {
     g_error("Could not create WebRTC pipeline: %s\n", error->message);
     g_error_free(error);

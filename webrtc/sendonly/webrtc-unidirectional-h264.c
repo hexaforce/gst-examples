@@ -97,28 +97,29 @@ ReceiverEntry *create_receiver_entry(SoupWebsocketConnection *connection) {
   g_object_ref(G_OBJECT(connection));
   g_signal_connect(G_OBJECT(connection), "message", G_CALLBACK(soup_websocket_message_cb), (gpointer)receiver_entry);
   error = NULL;
-  receiver_entry->pipeline = gst_parse_launch("webrtcbin name=webrtcbin stun-server=stun://stun.l.google.com:19302 " VIDEO_SRC " ! "
-                                              "videorate ! "
-                                              "videoscale ! "
-                                              "video/x-raw,width=640,height=360,framerate=15/1 ! "
-                                              "videoconvert ! "
-                                              "queue max-size-buffers=1 ! "
-                                              "x264enc bitrate=600 speed-preset=ultrafast tune=zerolatency key-int-max=15 ! "
-                                              "video/x-h264,profile=constrained-baseline ! "
-                                              "queue max-size-time=100000000 ! "
-                                              "h264parse ! "
-                                              "rtph264pay config-interval=-1 name=payloader aggregate-mode=zero-latency ! "
-                                              "application/x-rtp,media=video,encoding-name=H264,payload=96 ! "
-                                              "webrtcbin. "
-                                              "autoaudiosrc ! "
-                                              "queue max-size-buffers=1 leaky=downstream ! "
-                                              "audioconvert ! "
-                                              "audioresample ! "
-                                              "opusenc perfect-timestamp=true ! "
-                                              "rtpopuspay pt=97 ! "
-                                              "application/x-rtp,encoding-name=OPUS ! "
-                                              "webrtcbin. ",
-                                              &error);
+  receiver_entry->pipeline = gst_parse_launch(
+    "webrtcbin name=webrtcbin stun-server=stun://stun.l.google.com:19302 " VIDEO_SRC " ! "
+    "videorate ! "
+    "videoscale ! "
+    "video/x-raw,width=640,height=360,framerate=15/1 ! "
+    "videoconvert ! "
+    "queue max-size-buffers=1 ! "
+    "x264enc bitrate=600 speed-preset=ultrafast tune=zerolatency key-int-max=15 ! "
+    "video/x-h264,profile=constrained-baseline ! "
+    "queue max-size-time=100000000 ! "
+    "h264parse ! "
+    "rtph264pay config-interval=-1 name=payloader aggregate-mode=zero-latency ! "
+    "application/x-rtp,media=video,encoding-name=H264,payload=96 ! "
+    "webrtcbin. "
+    "autoaudiosrc ! "
+    "queue max-size-buffers=1 leaky=downstream ! "
+    "audioconvert ! "
+    "audioresample ! "
+    "opusenc perfect-timestamp=true ! "
+    "rtpopuspay pt=97 ! "
+    "application/x-rtp,encoding-name=OPUS ! "
+    "webrtcbin. ",
+    &error);
   if (error != NULL) {
     g_error("Could not create WebRTC pipeline: %s\n", error->message);
     g_error_free(error);
