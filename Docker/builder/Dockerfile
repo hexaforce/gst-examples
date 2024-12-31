@@ -22,6 +22,22 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   libcap-dev \
   libgtk-3-dev \
   libcap2-bin \
+  valgrind \
+  libdrm-dev \
+  liborc-0.4-dev \
+  iso-codes \
+  libasound2-dev \
+  libcdparanoia-dev \
+  libvisual-0.4-dev \
+  libvorbis-dev \
+  libxv-dev \
+  libsdl2-dev \
+  qtbase5-dev \
+  qtdeclarative5-dev \
+  libcdparanoia-dev \
+  libvorbis-dev \
+  qttools5-dev-tools \
+  libqt5opengl5-dev \
   gnutls-dev `# libnice` \
   gtk-doc-tools `# documentation tools` \
   libffi-dev \
