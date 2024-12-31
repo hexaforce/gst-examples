@@ -14,10 +14,7 @@
 #include <json-glib/json-glib.h>
 #include <string.h>
 
-#define RTP_PAYLOAD_TYPE "96"
-#define RTP_AUDIO_PAYLOAD_TYPE "97"
 #define SOUP_HTTP_PORT 57778
-#define STUN_SERVER "stun.l.google.com:19302"
 
 #ifdef G_OS_WIN32
 #define VIDEO_SRC "mfvideosrc"
@@ -151,16 +148,13 @@ create_receiver_entry (SoupWebsocketConnection * connection)
 
   error = NULL;
   receiver_entry->pipeline =
-      gst_parse_launch ("webrtcbin name=webrtcbin stun-server=stun://"
-      STUN_SERVER " "
+      gst_parse_launch ("webrtcbin name=webrtcbin stun-server=stun://stun.l.google.com:19302 "
       VIDEO_SRC
       " ! videorate ! videoscale ! video/x-raw,width=640,height=360,framerate=15/1 ! videoconvert ! queue max-size-buffers=1 ! x264enc bitrate=600 speed-preset=ultrafast tune=zerolatency key-int-max=15 ! video/x-h264,profile=constrained-baseline ! queue max-size-time=100000000 ! h264parse ! "
       "rtph264pay config-interval=-1 name=payloader aggregate-mode=zero-latency ! "
-      "application/x-rtp,media=video,encoding-name=H264,payload="
-      RTP_PAYLOAD_TYPE " ! webrtcbin. "
+      "application/x-rtp,media=video,encoding-name=H264,payload=96 ! webrtcbin. "
       "autoaudiosrc ! queue max-size-buffers=1 leaky=downstream"
-      " ! audioconvert ! audioresample ! opusenc perfect-timestamp=true ! rtpopuspay pt="
-      RTP_AUDIO_PAYLOAD_TYPE " ! application/x-rtp, encoding-name=OPUS !"
+      " ! audioconvert ! audioresample ! opusenc perfect-timestamp=true ! rtpopuspay pt=97 ! application/x-rtp, encoding-name=OPUS !"
       " webrtcbin. ", &error);
   if (error != NULL) {
     g_error ("Could not create WebRTC pipeline: %s\n", error->message);

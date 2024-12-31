@@ -18,11 +18,8 @@
  * and configures webrtcbin to receive an H.264 video feed, and to
  * send+recv an Opus audio stream */
 
-#define RTP_PAYLOAD_TYPE "96"
-#define RTP_CAPS_OPUS "application/x-rtp,media=audio,encoding-name=OPUS,payload="
 
 #define SOUP_HTTP_PORT 57778
-#define STUN_SERVER "stun.l.google.com:19302"
 
 
 
@@ -222,10 +219,9 @@ create_receiver_entry (SoupWebsocketConnection * connection)
 
   error = NULL;
   receiver_entry->pipeline =
-      gst_parse_launch ("webrtcbin name=webrtcbin stun-server=stun://"
-      STUN_SERVER " "
+      gst_parse_launch ("webrtcbin name=webrtcbin stun-server=stun://stun.l.google.com:19302 "
       "audiotestsrc is-live=true wave=red-noise ! audioconvert ! audioresample ! queue ! opusenc perfect-timestamp=true ! rtpopuspay ! "
-      "queue ! " RTP_CAPS_OPUS "97 ! webrtcbin. ", &error);
+      "queue ! application/x-rtp,media=audio,encoding-name=OPUS,payload=97 ! webrtcbin. ", &error);
   if (error != NULL) {
     g_error ("Could not create WebRTC pipeline: %s\n", error->message);
     g_error_free (error);
@@ -250,8 +246,7 @@ create_receiver_entry (SoupWebsocketConnection * connection)
   // Create a 2nd transceiver for the receive only video stream
   video_caps =
       gst_caps_from_string
-      ("application/x-rtp,media=video,encoding-name=H264,payload="
-      RTP_PAYLOAD_TYPE
+      ("application/x-rtp,media=video,encoding-name=H264,payload=96"
       ",clock-rate=90000,packetization-mode=(string)1, profile-level-id=(string)42c016");
   g_signal_emit_by_name (receiver_entry->webrtcbin, "add-transceiver",
       GST_WEBRTC_RTP_TRANSCEIVER_DIRECTION_RECVONLY, video_caps, &trans);
