@@ -23,15 +23,15 @@ export const initialValue = {
   isSettingRemoteAnswerPending: false,
 }
 
-const ws_protocol = 'wss'
-const ws_server = 'signalling.hexaforce.io'
-const ws_port = null
+// const ws_protocol = 'wss'
+// const ws_server = 'signalling.hexaforce.io'
+// const ws_port = null
+// const use_peer_id = null
 
-const use_peer_id = null
-
-// const ws_protocol = 'ws'
-// const ws_server = window.location.hostname
-// const ws_port = '8443'
+const ws_protocol = 'ws'
+const ws_server = window.location.hostname
+const ws_port = '8443'
+const use_peer_id = 1
 
 export const websocketServerURL = () => {
   if (ws_port) return `${ws_protocol}://${ws_server}:${ws_port}`

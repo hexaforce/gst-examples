@@ -503,7 +503,7 @@ start_pipeline (gboolean create_offer, guint opus_pt, guint vp8_pt)
 
   video_desc =
       g_strdup_printf
-      ("videotestsrc is-live=true pattern=ball ! video/x-raw,width=1920,height=1080,framerate=30/1 ! videoconvert ! queue ! "
+      ("videotestsrc is-live=true pattern=ball ! video/x-raw,width=1024,height=768,framerate=30/1 ! videoconvert ! queue ! "
       /* increase the default keyframe distance, browsers have really long
        * periods between keyframes and rely on PLI events on packet loss to
        * fix corrupted video.
