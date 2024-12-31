@@ -29,6 +29,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   libvisual-0.4-dev \
   libvorbis-dev \
   libxv-dev \
+  libsodium-dev \
   libsdl2-dev \
   qtbase5-dev \
   qtdeclarative5-dev \
