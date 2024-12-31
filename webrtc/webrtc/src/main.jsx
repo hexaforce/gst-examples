@@ -1,10 +1,9 @@
 import ReactDOM from 'react-dom/client'
-import React, { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
-import { initialValue, rtc_configuration, default_constraints, websocketServerURL,generatePeerId, parseMessage,trackStop } from './webrtc'
+import { initialValue, rtc_configuration, default_constraints, websocketServerURL, generatePeerId, parseMessage, trackStop } from './webrtc'
 
 const App = () => {
-
   const [state, setState] = useState({ ...initialValue })
   function inputChange(event) {
     const { id, type, value, checked } = event.target
@@ -12,12 +11,11 @@ const App = () => {
   }
 
   const ws_conn = useRef(null)
-  const peer_conn = useRef(null)
+  const peer_conn = useRef(new RTCPeerConnection(rtc_configuration))
   const receive_video_tag = useRef(null)
   const send_video_stream = useRef(null)
 
   useEffect(() => {
-    peer_conn.current = new RTCPeerConnection(rtc_configuration)
     websocketServerConnect()
     return () => {
       if (ws_conn.current) ws_conn.current.close()
@@ -25,9 +23,8 @@ const App = () => {
     }
   }, [])
 
-  const websocketServerConnect = () => {
-    if (state.connect_attempts > 2) {
-      setState((prevState) => ({ ...prevState, connect_attempts: prevState.connect_attempts + 1 }))
+  const websocketServerConnect = (connect_attempts = 0, isReconnecting = false) => {
+    if (connect_attempts > 3) {
       console.error('Too many connection attempts, aborting. Refresh page to try again')
       return
     }
@@ -36,11 +33,15 @@ const App = () => {
     let peer_id = generatePeerId()
 
     ws_conn.current = new WebSocket(websocketServerURL())
+
     ws_conn.current.onopen = () => {
       ws_conn.current.send('HELLO ' + peer_id)
       // Reset connection attempts because we connected successfully
-      setState((prevState) => ({ ...prevState, 'peer-id': peer_id, 'peer-connect-button': 'Connect', connect_attempts: 0 }))
+      setState((prevState) => ({ ...prevState, 'peer-id': peer_id, 'peer-connect-button': 'Connect' }))
+      connect_attempts = 0
+      isReconnecting = false
     }
+
     ws_conn.current.onmessage = async ({ type, data }) => {
       switch (data) {
         case 'HELLO':
@@ -61,11 +62,11 @@ const App = () => {
           // The peer wants us to set up and then send an offer
           if (!state.callCreateTriggered) createCall()
           return
-        default:
+        default: {
           // Handle incoming JSON SDP and ICE messages
           const { sdp, ice } = parseMessage(data)
           if (sdp != null && ice != null) {
-            console.error('Unknown incoming JSON: ' + msg)
+            console.error(`Unknown incoming JSON: ${type} <<< ${data}`)
             ws_conn.current.close()
             return
           }
@@ -73,19 +74,20 @@ const App = () => {
           if (!state.callCreateTriggered) createCall(sdp, ice)
           if (sdp != null) {
             console.log('receive <<< : ', sdp)
+
+            // An offer may come in while we are busy processing SRD(answer).
+            // In this case, we will be in "stable" by the time the offer is processed so it is safe to chain it on our Operations Chain now.
+            const readyForOffer = !state.makingOffer && (peer_conn.current.signalingState == 'stable' || state.isSettingRemoteAnswerPending)
+            const offerCollision = sdp.type == 'offer' && !readyForOffer
+            if (offerCollision) {
+              return
+            }
+
+            setState((prevState) => ({ ...prevState, isSettingRemoteAnswerPending: sdp.type == 'answer' }))
+            await peer_conn.current.setRemoteDescription(sdp)
+            setState((prevState) => ({ ...prevState, isSettingRemoteAnswerPending: false }))
+
             try {
-              // An offer may come in while we are busy processing SRD(answer).
-              // In this case, we will be in "stable" by the time the offer is processed so it is safe to chain it on our Operations Chain now.
-              const readyForOffer = !state.makingOffer && (peer_conn.current.signalingState == 'stable' || state.isSettingRemoteAnswerPending)
-              const offerCollision = sdp.type == 'offer' && !readyForOffer
-              if (offerCollision) {
-                return
-              }
-
-              setState((prevState) => ({ ...prevState, isSettingRemoteAnswerPending: sdp.type == 'answer' }))
-              await peer_conn.current.setRemoteDescription(sdp)
-              setState((prevState) => ({ ...prevState, isSettingRemoteAnswerPending: false }))
-
               if (sdp.type == 'offer') {
                 send_video_stream.current = await navigator.mediaDevices.getUserMedia(default_constraints)
                 for (const track of send_video_stream.current.getTracks()) {
@@ -111,8 +113,16 @@ const App = () => {
               console.error(err)
             }
           }
+        }
       }
     }
+
+    const reconnect = (wait) => {
+      if (!isReconnecting) {
+        setTimeout(() => websocketServerConnect(connect_attempts + 1, true), wait)
+      }
+    }
+
     ws_conn.current.onclose = async () => {
       console.log('Disconnected from server')
       // Release the webcam and mic
@@ -128,16 +138,17 @@ const App = () => {
       }
       setState((prevState) => ({ ...prevState, callCreateTriggered: false }))
       // Reset after a second
-      window.setTimeout(websocketServerConnect, 1000)
+      reconnect(1000)
     }
+
     ws_conn.current.onerror = () => {
       console.error('Unable to connect to server, did you add an exception for the certificate?')
       // Retry after 3 seconds
-      window.setTimeout(websocketServerConnect, 3000)
+      reconnect(3000)
     }
   }
 
-  const createCall = (sdp, ice) => {
+  const createCall = () => {
     setState((prevState) => ({ ...prevState, callCreateTriggered: true }))
 
     const send_channel = peer_conn.current.createDataChannel('label', null)
@@ -170,19 +181,22 @@ const App = () => {
       video.style.display = kind === 'audio' ? 'none' : 'block'
       video.srcObject = streams[0]
     }
-    peer_conn.current.onicecandidate = (event) => {
+
+    peer_conn.current.onicecandidate = ({ candidate }) => {
       // We have a candidate, send it to the remote party with the same uuid
-      if (event.candidate == null) {
+      if (candidate == null) {
         console.log('ICE Candidate was null, done')
         return
       }
-      ws_conn.current.send({ ice: event.candidate })
+      ws_conn.current.send({ ice: candidate })
     }
-    peer_conn.current.oniceconnectionstatechange = (event) => {
+
+    peer_conn.current.oniceconnectionstatechange = () => {
       if (peer_conn.current.iceConnectionState == 'connected') {
         console.log('ICE gathering complete')
       }
     }
+
     // let the "negotiationneeded" event trigger offer generation
     peer_conn.current.onnegotiationneeded = async () => {
       if (state['remote-offerer']) return
@@ -215,8 +229,7 @@ const App = () => {
     setState((prevState) => ({ ...prevState, 'peer-connect-button': 'Disconnect' }))
   }
 
-  const onTextKeyPress = (event) => {
-    const { type, code } = event
+  const onTextKeyPress = ({ type, code }) => {
     if (type == 'keydown' && code == 'Enter') {
       onConnectClicked()
       return false
@@ -228,7 +241,7 @@ const App = () => {
     <div>
       <div id='video'>
         <video ref={receive_video_tag} style={{ display: 'none' }} autoPlay playsInline>
-          Your browser doesn't support video
+          {"Your browser doesn't support video"}
         </video>
       </div>
       <div>
