@@ -10,6 +10,8 @@ RUN cargo install cargo-c
 RUN wget https://gitlab.freedesktop.org/gstreamer/gst-plugins-rs/-/archive/gstreamer-$GST_VERSION/gst-plugins-rs-gstreamer-$GST_VERSION.tar.gz \
  && tar -xvf gst-plugins-rs-gstreamer-$GST_VERSION.tar.gz > /dev/null \
  && cd gst-plugins-rs-gstreamer-$GST_VERSION \
-#  && cargo cbuild -p gst-plugin-cdg --prefix=/usr && cargo cinstall -p gst-plugin-cdg --prefix=/usr -v \
+ \
+#&& cargo cbuild -p gst-plugin-cdg --prefix=/usr && cargo cinstall -p gst-plugin-cdg --prefix=/usr -v \
  && meson --prefix=/usr build && ninja -C build -j$(nproc) && ninja -C build -v install \
+ && rm -rf build \
  && cd / 

@@ -10,8 +10,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   ca-certificates \
   flex `# build tools` \
   gettext \
-  git \ 
-  cmake \ 
+  git \
+  cmake \
   libc6-dev \
   libunwind-dev \
   libdw-dev \
@@ -35,12 +35,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   qtdeclarative5-dev \
   cdparanoia \
   libgupnp-igd-1.0-dev \
-  libvorbis-dev \
   qttools5-dev-tools \
   libqt5opengl5-dev \
-  libc6-dev \
-  libgupnp-igd-1.0-dev \
-  libc6-dev \
+  qt5-qmake \
+  qt6-5compat-dev \
   nasm \
   libv4l-dev \
   libaa1-dev \
@@ -61,7 +59,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   libgudev-1.0-dev \
   libx11-xcb-dev \
   libvorbisidec-dev \
-  libgupnp-igd-1.0-dev \
   libcaca-dev \
   qmake6 \
   qt6-base-dev \
@@ -71,26 +68,15 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   libusb-1.0-0-dev \
   libssh2-1-dev \
   libdirectfb-dev \
-  libflac-dev \
   libmodplug-dev \
   libjpeg-dev \
-  qt6-base-dev \
   libcdio-dev \
   libmpeg2-4-dev \
-  libopencv-dev \
-  libva-dev \
-  libusb-1.0-0-dev \
-  libssh2-1-dev \
-  libdirectfb-dev \
-  libflac-dev \
-  libmodplug-dev \
-  libjpeg-dev \
   libdca-dev \
   libfaad-dev \
   libfluidsynth-dev \
   libgme-dev \
   libgsm1-dev \
-  libmodplug-dev \
   mjpegtools \
   libneon27-gnutls-dev \
   libopenal-dev \
@@ -138,8 +124,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   mount `# system utility` \
   perl \
   libpcre3-dev `# PCRE (Perl Compatible Regular Expressions)` \
-  \
-  # FFMpeg and related libraries
   libavfilter-dev `# FFMpeg filters` \
   libavcodec-dev `# FFMpeg codecs` \
   libavformat-dev `# FFMpeg format support` \
@@ -147,15 +131,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   libpostproc-dev `# FFMpeg post-processing` \
   libavutil-dev `# FFMpeg utility functions` \
   libswresample-dev `# FFMpeg resampling` \
-  \
-  # Video codecs
   libaom-dev `# AV1 codec` \
   libdav1d-dev `# AV1 decoder` \
   libgav1-dev `# AV1 decoder` \
   librav1e-dev `# AV1 encoder` \
   libsvtav1-dev `# Scalable Video Technology for AV1` \
-  libsvtav1dec-dev `# SVT-AV1 decoder` \
-  libsvtav1enc-dev `# SVT-AV1 encoder` \
   libvpx-dev `# VP8/VP9 codec` \
   x264 `# H.264 encoder` \
   libx264-dev `# H.264 encoder` \
@@ -163,15 +143,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   libx265-dev `# H.265 encoder` \
   libde265-dev `# H.265 decoder` \
   libopenh264-dev `# H.264 decoder` \
-  \
-  # Audio codecs
   libmp3lame-dev `# MP3 encoder` \
   libopus-dev `# Opus codec` \
-  libvorbis-dev `# Vorbis codec` \
   libtheora-dev `# Theora codec` \
-  \
-  # Image codecs
-  libjpeg-dev `# JPEG codec` \
   libpng-dev `# PNG codec`
 
 RUN apt-get remove --purge libsoup-3.0-dev -y
