@@ -2,18 +2,23 @@
 #include <gst/gst.h>
 #include <gst/sdp/sdp.h>
 #include <locale.h>
+
 #ifdef G_OS_UNIX
 #include <glib-unix.h>
 #endif
 #define GST_USE_UNSTABLE_API
+
 #include <gst/webrtc/webrtc.h>
 #include <json-glib/json-glib.h>
 #include <libsoup/soup.h>
 #include <string.h>
+
 /* This example is a standalone app which serves a web page
  * and configures webrtcbin to receive an H.264 video feed, and to
  * send+recv an Opus audio stream */
+
 #define SOUP_HTTP_PORT 57778
+
 typedef struct _ReceiverEntry ReceiverEntry;
 ReceiverEntry *create_receiver_entry(SoupWebsocketConnection *connection);
 void destroy_receiver_entry(gpointer receiver_entry_ptr);
@@ -41,6 +46,7 @@ gchar *read_file(const gchar *filename) {
   }
   return content;
 }
+
 static void handle_media_stream(GstPad *pad, GstElement *pipe, const char *convert_name, const char *sink_name) {
   GstPad *qpad;
   GstElement *q, *conv, *resample, *sink;
@@ -74,6 +80,7 @@ static void handle_media_stream(GstPad *pad, GstElement *pipe, const char *conve
   ret = gst_pad_link(pad, qpad);
   g_assert_cmphex(ret, ==, GST_PAD_LINK_OK);
 }
+
 static void on_incoming_decodebin_stream(GstElement *decodebin, GstPad *pad, GstElement *pipe) {
   GstCaps *caps;
   const gchar *name;
@@ -91,6 +98,7 @@ static void on_incoming_decodebin_stream(GstElement *decodebin, GstPad *pad, Gst
     gst_printerr("Unknown pad %s, ignoring", GST_PAD_NAME(pad));
   }
 }
+
 static void on_incoming_stream(GstElement *webrtc, GstPad *pad, ReceiverEntry *receiver_entry) {
   GstElement *decodebin;
   GstPad *sinkpad;
@@ -104,6 +112,7 @@ static void on_incoming_stream(GstElement *webrtc, GstPad *pad, ReceiverEntry *r
   gst_pad_link(pad, sinkpad);
   gst_object_unref(sinkpad);
 }
+
 static gboolean bus_watch_cb(GstBus *bus, GstMessage *message, gpointer user_data) {
   GstPipeline *pipeline = user_data;
   switch (GST_MESSAGE_TYPE(message)) {
@@ -133,6 +142,7 @@ static gboolean bus_watch_cb(GstBus *bus, GstMessage *message, gpointer user_dat
   }
   return G_SOURCE_CONTINUE;
 }
+
 ReceiverEntry *create_receiver_entry(SoupWebsocketConnection *connection) {
   GError *error;
   ReceiverEntry *receiver_entry;
@@ -188,6 +198,7 @@ cleanup:
   destroy_receiver_entry((gpointer)receiver_entry);
   return NULL;
 }
+
 void destroy_receiver_entry(gpointer receiver_entry_ptr) {
   ReceiverEntry *receiver_entry = (ReceiverEntry *)receiver_entry_ptr;
   g_assert(receiver_entry != NULL);
@@ -204,6 +215,7 @@ void destroy_receiver_entry(gpointer receiver_entry_ptr) {
     g_object_unref(G_OBJECT(receiver_entry->connection));
   g_free(receiver_entry);
 }
+
 void on_offer_created_cb(GstPromise *promise, gpointer user_data) {
   gchar *sdp_string;
   gchar *json_string;
@@ -235,6 +247,7 @@ void on_offer_created_cb(GstPromise *promise, gpointer user_data) {
   g_free(sdp_string);
   gst_webrtc_session_description_free(offer);
 }
+
 void on_negotiation_needed_cb(GstElement *webrtcbin, gpointer user_data) {
   GstPromise *promise;
   ReceiverEntry *receiver_entry = (ReceiverEntry *)user_data;
@@ -242,6 +255,7 @@ void on_negotiation_needed_cb(GstElement *webrtcbin, gpointer user_data) {
   promise = gst_promise_new_with_change_func(on_offer_created_cb, (gpointer)receiver_entry, NULL);
   g_signal_emit_by_name(G_OBJECT(webrtcbin), "create-offer", NULL, promise);
 }
+
 void on_ice_candidate_cb(G_GNUC_UNUSED GstElement *webrtcbin, guint mline_index, gchar *candidate, gpointer user_data) {
   JsonObject *ice_json;
   JsonObject *ice_data_json;
@@ -258,6 +272,7 @@ void on_ice_candidate_cb(G_GNUC_UNUSED GstElement *webrtcbin, guint mline_index,
   soup_websocket_connection_send_text(receiver_entry->connection, json_string);
   g_free(json_string);
 }
+
 void soup_websocket_message_cb(G_GNUC_UNUSED SoupWebsocketConnection *connection, SoupWebsocketDataType data_type, GBytes *message, gpointer user_data) {
   gsize size;
   const gchar *data;
@@ -359,11 +374,13 @@ unknown_message:
   g_error("Unknown message \"%s\", ignoring", data_string);
   goto cleanup;
 }
+
 void soup_websocket_closed_cb(SoupWebsocketConnection *connection, gpointer user_data) {
   GHashTable *receiver_entry_table = (GHashTable *)user_data;
   g_hash_table_remove(receiver_entry_table, connection);
   gst_print("Closed websocket connection %p\n", (gpointer)connection);
 }
+
 void soup_http_handler(G_GNUC_UNUSED SoupServer *soup_server, SoupMessage *message, const char *path, G_GNUC_UNUSED GHashTable *query, G_GNUC_UNUSED SoupClientContext *client_context, G_GNUC_UNUSED gpointer user_data) {
   SoupBuffer *soup_buffer;
   if ((g_strcmp0(path, "/") != 0) && (g_strcmp0(path, "/index.html") != 0)) {
@@ -378,6 +395,7 @@ void soup_http_handler(G_GNUC_UNUSED SoupServer *soup_server, SoupMessage *messa
   soup_buffer_free(soup_buffer);
   soup_message_set_status(message, SOUP_STATUS_OK);
 }
+
 void soup_websocket_handler(G_GNUC_UNUSED SoupServer *server, SoupWebsocketConnection *connection, G_GNUC_UNUSED const char *path, G_GNUC_UNUSED SoupClientContext *client_context, gpointer user_data) {
   ReceiverEntry *receiver_entry;
   GHashTable *receiver_entry_table = (GHashTable *)user_data;
@@ -386,6 +404,7 @@ void soup_websocket_handler(G_GNUC_UNUSED SoupServer *server, SoupWebsocketConne
   receiver_entry = create_receiver_entry(connection);
   g_hash_table_replace(receiver_entry_table, connection, receiver_entry);
 }
+
 static gchar *get_string_from_json_object(JsonObject *object) {
   JsonNode *root;
   JsonGenerator *generator;
@@ -400,6 +419,7 @@ static gchar *get_string_from_json_object(JsonObject *object) {
   json_node_free(root);
   return text;
 }
+
 #ifdef G_OS_UNIX
 gboolean exit_sighandler(gpointer user_data) {
   gst_print("Caught signal, stopping mainloop\n");
@@ -407,6 +427,7 @@ gboolean exit_sighandler(gpointer user_data) {
   g_main_loop_quit(mainloop);
   return TRUE;
 }
+
 #endif
 int main(int argc, char *argv[]) {
   GMainLoop *mainloop;
