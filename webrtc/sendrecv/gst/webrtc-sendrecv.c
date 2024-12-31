@@ -1,6 +1,5 @@
 /*
- * Demo gstreamer app for negotiating and streaming a sendrecv webrtc stream
- * with a browser JS app.
+ * Demo gstreamer app for negotiating and streaming a sendrecv webrtc stream with a browser JS app.
  *
  * Build by running: `make webrtc-sendrecv`, or build the gstreamer monorepo.
  *
@@ -46,20 +45,20 @@ static GstElement *pipe1, *webrtc1, *audio_bin, *video_bin = NULL;
 static GObject *send_channel, *receive_channel;
 static SoupWebsocketConnection *ws_conn = NULL;
 static enum AppState app_state = 0;
+
 static gchar *peer_id = NULL;
 static gchar *our_id = NULL;
 static const gchar *server_url = "wss://webrtc.gstreamer.net:8443";
 static gboolean disable_ssl = FALSE;
 static gboolean remote_is_offerer = FALSE;
 static gboolean custom_ice = FALSE;
-
 static GOptionEntry entries[] = {
-    {"peer-id", 0, 0, G_OPTION_ARG_STRING, &peer_id, "String ID of the peer to connect to", "ID"},
-    {"our-id", 0, 0, G_OPTION_ARG_STRING, &our_id, "String ID that the peer can use to connect to us", "ID"},
-    {"server", 0, 0, G_OPTION_ARG_STRING, &server_url, "Signalling server to connect to", "URL"},
-    {"disable-ssl", 0, 0, G_OPTION_ARG_NONE, &disable_ssl, "Disable ssl", NULL},
-    {"remote-offerer", 0, 0, G_OPTION_ARG_NONE, &remote_is_offerer, "Request that the peer generate the offer and we'll answer", NULL},
-    {"custom-ice", 0, 0, G_OPTION_ARG_NONE, &custom_ice, "Use a custom ice agent", NULL},
+    {"peer-id",        0, 0, G_OPTION_ARG_STRING, &peer_id, "String ID of the peer to connect to", "ID"},
+    {"our-id",         0, 0, G_OPTION_ARG_STRING, &our_id, "String ID that the peer can use to connect to us", "ID"},
+    {"server",         0, 0, G_OPTION_ARG_STRING, &server_url, "Signalling server to connect to", "URL"},
+    {"disable-ssl",    0, 0, G_OPTION_ARG_NONE,   &disable_ssl, "Disable ssl", NULL},
+    {"remote-offerer", 0, 0, G_OPTION_ARG_NONE,   &remote_is_offerer, "Request that the peer generate the offer and we'll answer", NULL},
+    {"custom-ice",     0, 0, G_OPTION_ARG_NONE,   &custom_ice, "Use a custom ice agent", NULL},
     {NULL},
 };
 
