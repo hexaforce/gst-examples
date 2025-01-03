@@ -24,5 +24,5 @@ services:
   gst-webrtc-signalling-server:
     image: hexaforce/gst-webrtc-signalling-server:1.24.10
     ports:
-      - 18443:8443
+      - 18443:18443
     restart: no
