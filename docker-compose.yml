@@ -14,7 +14,7 @@ services:
     restart: no
 
   gst-webrtc-api:
-    image: hexaforce/gst-webrtc-api
+    image: hexaforce/gst-webrtc-api:1.24.10
     ports:
       - 13000:3000
     depends_on:
